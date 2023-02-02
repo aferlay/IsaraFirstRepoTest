@@ -1,0 +1,70 @@
+# on importe le module graphique
+import tkinter as tk
+from tkinter import messagebox
+
+#TRES IMPORTANT :
+# on va partager les responsabilités entre différentes fonction :
+# - fonction RecupEntree() : gestion de l'entrée utilisateur
+# - fonction AffichageResultat () : gestion de la sortie (affichage du résultat)
+# - fonction Calculer () : fonction intelligente du programme (reste le pt d'entrée dan sle programme)
+
+def RecupEntree(): # pas de paramètre
+    strN = textBox.get()
+    try :
+        Nb = int(strN) # trantypage
+    except :
+        # méthode showwarning : 1er paramètre -> titre, 2ème paramètre -> message  
+        messagebox.showwarning("Entrée illicite", "Vous ne devez pas saisir un texte !")
+        return -1 # pour que la fonction Calculer perçoise l'erreur
+    else :
+        if (Nb<0) :
+                messagebox.showwarning("Entrée illicite", "Votre entier ne doit pas être négatif !")
+                return -1 # pour que la fonction Calculer perçoise l'erreur
+        else :
+            return Nb
+        
+def AffichageResultat (nombre, resultat): # définition des nouveaux paramètre d'éntrée
+    
+    Resultat = "La factorielle de " + str(nombre) + " est " + str(resultat)
+            # on affiche le résultat (avec la méthode configre()) dans le label prévus à cet effet
+    lblRes.configure(text = Resultat)    
+
+def Calculer() :
+    fact = 1
+    N = RecupEntree()
+    if (N >= 0) :
+        if N != 0 :
+            for i in range(1, N+1) :
+                fact = fact * i
+        AffichageResultat (N, fact) # paramètre que Calculer communique à AffichageResultat
+# les fonctions se parlent par entée sortie
+# entrée = paramètre (..., ..., ...)
+# sortie = return ..., ..., ...
+           
+       
+
+###############################################################
+# Construction de l'interface (IHM = Interface Homme Machine)
+
+#CONSTRUCTION DE LA FENETRE
+interface = tk.Tk()  # on construit la fenêtre interface
+interface.geometry("500x200")  # taille de la fenêtre
+interface.title("Factorielle") # titre de la fenêtre
+
+#CONSTRUCTION DES OBJETS GRAPHIQUES
+mess = tk.Label(interface, text = "Entrez un nombre entier") # constructeur du label
+mess.pack() # on fait apparaître l'objet sur la fenêtre
+
+textBox = tk.Entry(interface, width = 10) # constructeur textbox (boite à texte interactive) 
+textBox.pack() # on fait apparaître l'objet sur la fenêtre # width def du nombre de caractère pris en compte 
+
+btn = tk.Button(interface, text = "Calculer factorielle", command = Calculer) 
+btn.pack() # on fait apparaître l'objet sur la fenêtre
+# command = Calculer permet de déclancheer une partie du code on doit inclure calculer dans le code
+
+lblRes = tk.Label(interface, width = 50) # stockage du résultat
+lblRes.pack() # on fait apparaître l'objet sur la fenêtre
+
+#PRIMORDIAL : LANCE LA BOUCLE D'ATTENTE D'EVENEMENTS (seulement appuis sur le bouton)
+interface.mainloop()
+
